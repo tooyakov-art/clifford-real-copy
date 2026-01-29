@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clifford Glass Studio</title>
+    
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Lenis Smooth Scroll -->
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.23/bundled/lenis.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-dark: #1a1a2e;
+            --secondary-dark: #16213e;
+            --purple: #6a4c93;
+            --blue: #4f46e5;
+            --light-purple: #a855f7;
+            --white: #ffffff;
+            --light-gray: rgba(255, 255, 255, 0.8);
+            --medium-gray: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: auto;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary-dark);
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            line-height: 1.2;
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--medium-gray);
+            margin-bottom: 3rem;
+        }
+
+        .large-heading {
+            font-size: clamp(2.5rem, 8vw, 6rem);
+            font-weight: 400;
+            margin-bottom: 2rem;
+            line-height: 1.1;
+        }
+
+        .medium-heading {
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+        }
+
+        .body-text {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            font-weight: 300;
+            color: var(--light-gray);
+            line-height: 1.8;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem 5%;
+            z-index: 1000;
+            background: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary-dark);
+            font-size: 14px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--light-purple);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 4px;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 2px;
+            background: var(--white);
+            transition: 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 12rem 5% 8rem;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 50%, var(--purple) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 70% 20%, rgba(168, 85, 247, 0.3), transparent 50%),
+                        radial-gradient(circle at 20% 80%, rgba(79, 70, 229, 0.2), transparent 50%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: clamp(4rem, 15vw, 12rem);
+            font-weight: 400;
+            line-height: 0.85;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--white), var(--light-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 300;
+            color: var(--light-gray);
+            max-width: 600px;
+            margin-bottom: 1rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 5%;
+            font-size: 12px;
+            color: var(--medium-gray);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+        }
+
+        .scroll-indicator::after {
+            content: '';
+            width: 1px;
+            height: 60px;
+            background: var(--medium-gray);
+            animation: scrollLine 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollLine {
+            0%, 100% { transform: translateY(0); opacity: 0; }
+            50% { transform: translateY(20px); opacity: 1; }
+        }
+
+        /* Glass Images */
+        .glass-images {
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            opacity: 0.8;
+        }
+
+        .glass-image {
+            width: 200px;
+            height: 300px;
+            background: linear-gradient(135deg, 
+                rgba(168, 85, 247, 0.3),
+                rgba(79, 70, 229, 0.3));
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100%" height="100%" fill="url(%23pattern)"/></svg>');
+        }
+
+        /* Sections */
+        section {
+            padding: 8rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* What We Do Section */
+        .what-we-do {
+            background: var(--secondary-dark);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 8rem;
+        }
+
+        .what-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 8rem;
+            align-items: start;
+        }
+
+        /* Projects Section */
+        .projects {
+            padding: 12rem 5% 8rem;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 6rem;
+        }
+
+        .project-item {
+            aspect-ratio: 4/3;
+            background: linear-gradient(135deg, 
+                rgba(168, 85, 247, 0.2),
+                rgba(79, 70, 229, 0.2));
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(20px);
+        }
+
+        .project-item:hover {
+            transform: translateY(-10px);
+            border-color: var(--light-purple);
+            box-shadow: 0 20px 40px rgba(168, 85, 247, 0.3);
+        }
+
+        .project-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(26, 26, 46, 0.9), transparent);
+            transform: translateY(50%);
+            transition: transform 0.4s ease;
+        }
+
+        .project-item:hover .project-content {
+            transform: translateY(0);
+        }
+
+        /* Techniques Section */
+        .techniques {
+            padding: 12rem 5%;
+            background: var(--primary-dark);
+        }
+
+        .techniques-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 6rem;
+            margin-top: 6rem;
+        }
+
+        .technique-item {
+            text-align: left;
+            padding: 3rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .technique-number {
+            font-size: 11px;
+            color: var(--medium-gray);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+        }
+
+        .technique-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 400;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--white), var(--light-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .technique-description {
+            color: var(--light-gray);
+            line-height: 1.7;
+            font-size: 1.1rem;
+        }
+
+        /* Expertise Section */
+        .expertise {
+            padding: 12rem 5%;
+            background: linear-gradient(135deg, var(--secondary-dark), var(--primary-dark));
+        }
+
+        .expertise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 4rem;
+            margin-top: 6rem;
+        }
+
+        .expertise-item {
+            padding: 4rem 3rem;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.05),
+                rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(20px);
+        }
+
+        .expertise-item:hover {
+            transform: translateY(-8px);
+            border-color: var(--light-purple);
+            box-shadow: 0 20px 40px rgba(168, 85, 247, 0.2);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.08),
+                rgba(255, 255, 255, 0.04));
+        }
+
+        .expertise-number {
+            font-size: 11px;
+            color: var(--medium-gray);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+        }
+
+        .expertise-title {
+            font-size: 2rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 12rem 5% 8rem;
+            background: var(--primary-dark);
+            text-align: center;
+        }
+
+        .contact-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 400;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--white), var(--light-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .contact-subtitle {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            color: var(--light-gray);
+            margin-bottom: 6rem;
+            line-height: 1.8;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 4rem;
+            margin-top: 6rem;
+            text-align: left;
+        }
+
+        .contact-item h4 {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--medium-gray);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .contact-item p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--light-gray);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 5%;
+            background: var(--secondary-dark);
+            color: var(--medium-gray);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            font-size: 12px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .glass-images {
+                display: none;
+            }
+            
+            .what-grid {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+            
+            .projects-grid,
+            .techniques-grid,
+            .expertise-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .contact-info {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            section {
+                padding: 6rem 8%;
+            }
+            
+            .hero {
+                padding: 10rem 8% 6rem;
+            }
+        }
+
+        /* Scroll effects */
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle at center, rgba(168, 85, 247, 0.1), transparent 70%);
+            animation: parallaxFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes parallaxFloat {
+            0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+            50% { transform: translateX(-20px) translateY(-10px) rotate(2deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">CGS</div>
+            <ul class="nav-menu">
+                <li><a href="#work" class="nav-link">Work</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="parallax-bg"></div>
+        
+        <div class="hero-content">
+            <div class="section-label">WHO WE ARE</div>
+            <h1 class="hero-title">We are a Bespoke Glass Design Studio<br>Based in London, working across the globe.</h1>
+            <p class="hero-subtitle">We are a Bespoke Glass Design Studio<br>Based in London, working across the globe.</p>
+        </div>
+        
+        <div class="glass-images">
+            <div class="glass-image"></div>
+            <div class="glass-image"></div>
+        </div>
+        
+        <div class="scroll-indicator">
+            Scroll
+        </div>
+    </section>
+
+    <!-- What We Do Section -->
+    <section class="what-we-do">
+        <div class="section-label">WHAT WE DO</div>
+        <div class="what-grid">
+            <div>
+                <h2 class="large-heading">We create bespoke glass artworks that merge artistic vision with expert craftsmanship.</h2>
+            </div>
+            <div>
+                <p class="body-text">Each piece is custom-made to elevate interiors, reflect individuality, and bring light and depth to its surroundings.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="projects">
+        <div class="section-label">SELECTED PROJECTS</div>
+        <h2 class="large-heading">A Selection of our Work</h2>
+        
+        <div class="projects-grid">
+            <div class="project-item">
+                <div class="project-content">
+                    <h3 class="medium-heading">Luxury Hotel Lobby</h3>
+                    <p class="body-text">Églomisé glass installation with gold leaf detailing</p>
+                </div>
+            </div>
+            
+            <div class="project-item">
+                <div class="project-content">
+                    <h3 class="medium-heading">Restaurant Feature Wall</h3>
+                    <p class="body-text">Hand etched glass panels with botanical motifs</p>
+                </div>
+            </div>
+            
+            <div class="project-item">
+                <div class="project-content">
+                    <h3 class="medium-heading">Private Residence</h3>
+                    <p class="body-text">Edge-lit glass staircase with LED integration</p>
+                </div>
+            </div>
+            
+            <div class="project-item">
+                <div class="project-content">
+                    <h3 class="medium-heading">Retail Showroom</h3>
+                    <p class="body-text">Sand blasted glass partitions with custom patterns</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Techniques Section -->
+    <section class="techniques">
+        <div class="section-label">OUR TECHNIQUES</div>
+        <h2 class="large-heading">Our Glass Techniques</h2>
+        
+        <div class="techniques-grid">
+            <div class="technique-item">
+                <div class="technique-number">01</div>
+                <h3 class="technique-title">Églomisé Glass</h3>
+                <p class="technique-description">Gold, silver, and metal leaf are applied to the reverse of the glass. The finish plays with light and reflection, from subtle patina to bold, gilded brilliance.</p>
+            </div>
+            
+            <div class="technique-item">
+                <div class="technique-number">02</div>
+                <h3 class="technique-title">Hand Etched Glass</h3>
+                <p class="technique-description">Fine engraving tools cut directly into the glass surface. This precise, controlled method captures delicate detail while giving each piece a permanent, hand-crafted character.</p>
+            </div>
+            
+            <div class="technique-item">
+                <div class="technique-number">03</div>
+                <h3 class="technique-title">Edge-Lit Glass</h3>
+                <p class="technique-description">Edge-lit glass uses etched or carved details illuminated by hidden LEDs, causing the designs to glow with depth and clarity. The light enhances contrast and movement, creating vivid, striking panels.</p>
+            </div>
+            
+            <div class="technique-item">
+                <div class="technique-number">04</div>
+                <h3 class="technique-title">Sand Blasted Glass</h3>
+                <p class="technique-description">Compressed air propels fine abrasive particles against the glass surface, creating textured, frosted effects. This technique allows for precise pattern creation and varying degrees of opacity.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expertise Section -->
+    <section class="expertise">
+        <div class="section-label">SPECIALIST INDUSTRIES</div>
+        <h2 class="large-heading">Our Areas of Expertise</h2>
+        <p class="body-text">Crafting bespoke glass installations across diverse sectors, we bring over 30 years of experience to every project.</p>
+        
+        <div class="expertise-grid">
+            <div class="expertise-item">
+                <div class="expertise-number">01</div>
+                <h3 class="expertise-title">Hospitality</h3>
+                <p class="body-text">We create glasswork that becomes part of the experience, inviting guests into spaces that feel immersive, memorable, and beautifully considered.</p>
+            </div>
+            
+            <div class="expertise-item">
+                <div class="expertise-number">02</div>
+                <h3 class="expertise-title">Retail</h3>
+                <p class="body-text">Designed to inspire and engage, our glass installations create moments of pause—amplifying product stories and transforming retail spaces into experiences.</p>
+            </div>
+            
+            <div class="expertise-item">
+                <div class="expertise-number">03</div>
+                <h3 class="expertise-title">Luxury Residential</h3>
+                <p class="body-text">Glass becomes a living part of the home. Designed to reflect personal style, enhance natural light, and bring a quiet sense of luxury to everyday spaces.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact">
+        <div class="section-label">OUR PARTNERS</div>
+        <h2 class="contact-title">Have a project in mind? Feel free to get in touch.</h2>
+        <p class="contact-subtitle">Let's talk. We work closely with clients to turn ideas into custom glass that speaks with clarity and purpose.</p>
+        
+        <div class="contact-info">
+            <div class="contact-item">
+                <h4>EMAIL</h4>
+                <p>info@cliffordglassstudio.co.uk</p>
+            </div>
+            
+            <div class="contact-item">
+                <h4>PHONE</h4>
+                <p>+44 790 332 3152</p>
+            </div>
+            
+            <div class="contact-item">
+                <h4>ADDRESS</h4>
+                <p>Unit 7, Block 2, Woolwich Dockyard,<br>Woolwich Church St, London, SE18 5PQ</p>
+            </div>
+            
+            <div class="contact-item">
+                <h4>SOCIAL</h4>
+                <p>Instagram<br>Behance<br>LinkedIn</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Design & Development: Clifford Glass Studio © 2024</p>
+    </footer>
+
+    <script>
+        // Initialize GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Smooth Scroll
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // Hero Animation
+        gsap.fromTo('.hero-title', 
+            { 
+                y: 100,
+                opacity: 0,
+                scale: 0.9
+            },
+            {
+                y: 0,
+                opacity: 1,
+                scale: 1,
+                duration: 1.5,
+                ease: 'power3.out',
+                delay: 0.8
+            }
+        );
+
+        gsap.fromTo('.hero-subtitle', 
+            { 
+                y: 50,
+                opacity: 0
+            },
+            {
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                delay: 1.2
+            }
+        );
+
+        gsap.fromTo('.section-label', 
+            { 
+                y: 30,
+                opacity: 0
+            },
+            {
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                delay: 0.5
+            }
+        );
+
+        // Glass Images Animation
+        gsap.fromTo('.glass-image', 
+            {
+                y: 60,
+                opacity: 0,
+                scale: 0.8
+            },
+            {
+                y: 0,
+                opacity: 1,
+                scale: 1,
+                duration: 1.2,
+                ease: 'back.out(1.7)',
+                delay: 1.5,
+                stagger: 0.2
+            }
+        );
+
+        // Section Animations
+        gsap.utils.toArray('.large-heading').forEach(heading => {
+            gsap.fromTo(heading, 
+                {
+                    y: 80,
+                    opacity: 0
+                },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: heading,
+                        start: 'top 85%'
+                    }
+                }
+            );
+        });
+
+        // Project Items Animation
+        gsap.utils.toArray('.project-item').forEach((item, i) => {
+            gsap.fromTo(item, 
+                {
+                    y: 60,
+                    opacity: 0,
+                    scale: 0.9
+                },
+                {
+                    y: 0,
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.8,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: item,
+                        start: 'top 90%'
+                    },
+                    delay: i * 0.1
+                }
+            );
+        });
+
+        // Technique Items Animation
+        gsap.utils.toArray('.technique-item').forEach((item, i) => {
+            gsap.fromTo(item, 
+                {
+                    y: 50,
+                    opacity: 0
+                },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: item,
+                        start: 'top 85%'
+                    },
+                    delay: i * 0.15
+                }
+            );
+        });
+
+        // Expertise Items Animation
+        gsap.utils.toArray('.expertise-item').forEach((item, i) => {
+            gsap.fromTo(item, 
+                {
+                    y: 50,
+                    opacity: 0
+                },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: item,
+                        start: 'top 85%'
+                    },
+                    delay: i * 0.1
+                }
+            );
+        });
+
+        // Contact Animation
+        gsap.fromTo('.contact-title', 
+            {
+                y: 60,
+                opacity: 0
+            },
+            {
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: '.contact',
+                    start: 'top 80%'
+                }
+            }
+        );
+
+        // Parallax Effects
+        gsap.to('.parallax-bg', {
+            yPercent: -30,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '.hero',
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: true
+            }
+        });
+
+        // Navigation scroll effect
+        ScrollTrigger.create({
+            start: 'top -80',
+            end: 99999,
+            toggleClass: {
+                className: 'scrolled',
+                targets: 'nav'
+            }
+        });
+
+        // Smooth scroll to sections
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) {
+                    lenis.scrollTo(target);
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        document.querySelector('.menu-toggle').addEventListener('click', () => {
+            document.querySelector('.nav-menu').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
